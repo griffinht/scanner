@@ -125,12 +125,58 @@ const receipts: ReceiptData[] = [
     total: 90.16,
     paymentMethod: "Discover (Card ending in 4410)",
     date: "2024-01-20"
+  },
+  {
+    storeInfo: {
+      name: "Target",
+      location: "4841 Grove St, Raleigh, NC 27612",
+      phone: "919-555-0123"
+    },
+    items: [
+      {
+        name: "UP & UP PAPER TOWELS 6PK",
+        price: 7.99,
+        regularPrice: 9.99,
+        savings: 2.00
+      },
+      {
+        name: "GOOD & GATHER MILK 1GAL",
+        price: 3.99
+      },
+      {
+        name: "MARKET PANTRY BREAD",
+        price: 2.49
+      },
+      {
+        name: "CHEERIOS FAMILY SIZE",
+        price: 5.99,
+        regularPrice: 6.99,
+        savings: 1.00
+      },
+      {
+        name: "TIDE PODS ORIGINAL 42CT",
+        price: 12.99
+      },
+      {
+        name: "CAT & JACK KIDS SOCKS",
+        price: 6.99
+      }
+    ],
+    subtotal: 40.44,
+    totalSavings: 3.00,
+    netSales: 37.44,
+    tax: [
+      { rate: 7.25, amount: 2.71 }
+    ],
+    total: 40.15,
+    paymentMethod: "Target RedCard",
+    date: "2024-01-22"
   }
 ];
 
 export function getMockResults(): ReceiptData {
   mockIndex = (mockIndex + 1) % receipts.length; // Changed from % 2 to % 1
-  
+  console.log(mockIndex)
   return receipts[mockIndex];
 }
 

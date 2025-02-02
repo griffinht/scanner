@@ -6,19 +6,19 @@ import { Receipt } from "./Receipt";
 
 interface ReceiptCarouselProps {
   receipts: ReceiptData[];
-  currentIndex: number;
-  onIndexChange: (index: number) => void;
 }
 
-export function ReceiptCarousel({ receipts, currentIndex, onIndexChange }: ReceiptCarouselProps) {
+export function ReceiptCarousel({ receipts }: ReceiptCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   if (receipts.length === 0) return null;
 
   const handlePrevious = () => {
-    onIndexChange(currentIndex === 0 ? receipts.length - 1 : currentIndex - 1);
+    setCurrentIndex(currentIndex === 0 ? receipts.length - 1 : currentIndex - 1);
   };
 
   const handleNext = () => {
-    onIndexChange(currentIndex === receipts.length - 1 ? 0 : currentIndex + 1);
+    setCurrentIndex(currentIndex === receipts.length - 1 ? 0 : currentIndex + 1);
   };
 
   return (

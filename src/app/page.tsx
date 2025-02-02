@@ -9,7 +9,6 @@ import { ReceiptCarousel } from "@/components/ReceiptCarousel";
 export default function Home() {
   const [scannedImage, setScannedImage] = useState<string | null>(null);
   const [receipts, setReceipts] = useState<ReceiptData[]>([]);
-  const [currentReceiptIndex, setCurrentReceiptIndex] = useState(0);
 
   const handleImageCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -19,8 +18,6 @@ export default function Home() {
         setScannedImage(reader.result as string);
         const newReceipt = getMockResults();
         setReceipts([...receipts, newReceipt]);
-        console.log(receipts)
-        setCurrentReceiptIndex(receipts.length - 1);
       };
       reader.readAsDataURL(file);
     }
@@ -39,17 +36,13 @@ export default function Home() {
 
           <div className="w-full">
             <ImagePreview imageUrl={scannedImage} />
-            {receipts.length > 0 && receipts[currentReceiptIndex] && (
+            {receipts.length > 0 && (
               <>
-                <ReceiptCarousel 
-                  receipts={receipts} 
-                  currentIndex={currentReceiptIndex}
-                  onIndexChange={setCurrentReceiptIndex}
-                />
+                <ReceiptCarousel receipts={receipts} />
                 <ReceiptAnalysis 
-                  items={receipts[currentReceiptIndex].items}
-                  total={receipts[currentReceiptIndex].total}
-                  totalSavings={receipts[currentReceiptIndex].totalSavings}
+                  items={receipts[0].items}
+                  total={receipts[0].total}
+                  totalSavings={receipts[0].totalSavings}
                 />
               </>
             )}
