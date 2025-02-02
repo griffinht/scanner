@@ -2,25 +2,25 @@
 import { useState } from "react";
 import { ScanButton } from "@/components/ScanButton";
 import { ImagePreview } from "@/components/ImagePreview";
-import { Receipt } from "@/components/Receipt";
 import { ReceiptAnalysis } from "@/components/ReceiptAnalysis";
 import { type ReceiptData, getMockResults } from "./mockResults";
 import { ReceiptCarousel } from "@/components/ReceiptCarousel";
 
 export default function Home() {
-  const [scannedImages, setScannedImages] = useState<string[]>([]);
+  const [scannedImage, setScannedImage] = useState<string | null>(null);
   const [receipts, setReceipts] = useState<ReceiptData[]>([]);
+  const [currentReceiptIndex, setCurrentReceiptIndex] = useState(0);
 
   const handleImageCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = async () => {
-        setScannedImages([reader.result as string]);
-        setReceipts(prev => {
-          const newReceipt = getMockResults();
-          return [...prev.slice(0, -1), newReceipt];
-        });
+        setScannedImage(reader.result as string);
+        const newReceipt = getMockResults();
+        setReceipts([...receipts, newReceipt]);
+        console.log(receipts)
+        setCurrentReceiptIndex(receipts.length - 1);
       };
       reader.readAsDataURL(file);
     }
@@ -33,25 +33,27 @@ export default function Home() {
         
         <div className="flex flex-col items-center gap-4">
           <ScanButton 
-            hasImage={scannedImages.length > 0} 
+            hasImage={scannedImage !== ""} 
             onCapture={handleImageCapture} 
           />
 
-          {scannedImages.map((image, index) => (
-            <div key={index} className="w-full">
-              <ImagePreview imageUrl={image} />
-              {receipts.length > 0 && (
-                <>
-                  <ReceiptCarousel receipts={receipts} />
-                  <ReceiptAnalysis 
-                    items={receipts[index].items}
-                    total={receipts[index].total}
-                    totalSavings={receipts[index].totalSavings}
-                  />
-                </>
-              )}
-            </div>
-          ))}
+          <div className="w-full">
+            <ImagePreview imageUrl={scannedImage} />
+            {receipts.length > 0 && receipts[currentReceiptIndex] && (
+              <>
+                <ReceiptCarousel 
+                  receipts={receipts} 
+                  currentIndex={currentReceiptIndex}
+                  onIndexChange={setCurrentReceiptIndex}
+                />
+                <ReceiptAnalysis 
+                  items={receipts[currentReceiptIndex].items}
+                  total={receipts[currentReceiptIndex].total}
+                  totalSavings={receipts[currentReceiptIndex].totalSavings}
+                />
+              </>
+            )}
+          </div>
         </div>
       </main>
     </div>
