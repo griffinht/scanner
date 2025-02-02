@@ -5,6 +5,7 @@ import { ImagePreview } from "@/components/ImagePreview";
 import { Receipt } from "@/components/Receipt";
 import { ReceiptAnalysis } from "@/components/ReceiptAnalysis";
 import { type ReceiptData, getMockResults } from "./mockResults";
+import { ReceiptCarousel } from "@/components/ReceiptCarousel";
 
 export default function Home() {
   const [scannedImages, setScannedImages] = useState<string[]>([]);
@@ -15,8 +16,11 @@ export default function Home() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = async () => {
-        setScannedImages(prev => [...prev, reader.result as string]);
-        setReceipts(prev => [...prev, getMockResults()]);
+        setScannedImages([reader.result as string]);
+        setReceipts(prev => {
+          const newReceipt = getMockResults();
+          return [...prev.slice(0, -1), newReceipt];
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -36,9 +40,9 @@ export default function Home() {
           {scannedImages.map((image, index) => (
             <div key={index} className="w-full">
               <ImagePreview imageUrl={image} />
-              {receipts[index] && (
+              {receipts.length > 0 && (
                 <>
-                  <Receipt {...receipts[index]} />
+                  <ReceiptCarousel receipts={receipts} />
                   <ReceiptAnalysis 
                     items={receipts[index].items}
                     total={receipts[index].total}
